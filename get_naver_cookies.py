@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from webdriver_manager.chrome import ChromeDriverManager
+from bs4 import BeautifulSoup
 import pyperclip
 from config import NAVER_ID, NAVER_PW
 
@@ -27,6 +28,21 @@ def get_naver_cookies():
     ActionChains(driver).key_down(Keys.COMMAND).send_keys('v').key_up(Keys.COMMAND).perform()
     sleep(1)
     driver.find_element(By.ID,'log.login').click()
-    sleep(1)
-    cookies = driver.get_cookies()
-    return cookies
+
+    driver.get("https://cafe.naver.com/chocammall?iframe_url_utf8=%2FArticleRead.nhn%253Fclubid%3D20486145%2526page%3D1%2526menuid%3D214%2526boardtype%3DL%2526articleid%3D7586243%2526referrerAllArticles%3Dfalse")    
+    sleep(0.2)
+    driver.switch_to.frame('cafe_main')
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    print(soup.find('strong', {'class':'cost'}).text.strip())
+    
+    driver.get("https://cafe.naver.com/chocammall?iframe_url_utf8=%2FArticleRead.nhn%253Fclubid%3D20486145%2526page%3D1%2526menuid%3D214%2526boardtype%3DL%2526articleid%3D7586307%2526referrerAllArticles%3Dfalse")
+    sleep(0.2)
+    driver.switch_to.frame('cafe_main')
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    print(soup.find('strong', {'class':'cost'}).text.strip())
+    # driver.get("cafe.naver.com/ArticleList.nhn?search.clubid=20486145&search.menuid=214&search.boardtype=L")
+    # sleep(1)
+    # soup = BeautifulSoup(driver.page_source, 'html.parser')
+    # print(soup)
+
+    return driver
