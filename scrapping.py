@@ -1,10 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
+from time import sleep
 
-def search_each_period(periods, cookies):
-    print('web scrapping start')
-    new_sellings = []
-    id = 1
+def set_cookies(cookies):
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36'
     }
@@ -13,6 +11,10 @@ def search_each_period(periods, cookies):
     for cookie in cookies:
         c = {cookie['name']: cookie['value']}
         session.cookies.update(c)
+    return session
+
+def get_article_ids(periods, session):
+    article_ids = []
     period_max = periods[len(periods) - 1]
     for period in periods:
         page = session.get(f"https://cafe.naver.com/ArticleSearchList.nhn?search.clubid=20486145&search.menuid=214&search.media=0&search.searchdate={period}{period}&search.defaultValue=1&userDisplay=50&search.onSale=1&search.option=3&search.sortBy=date&search.searchBy=0&search.query=%C6%C7%B8%C5%26&search.viewtype=title&search.page=1")
@@ -25,42 +27,73 @@ def search_each_period(periods, cookies):
             table = page_parsed.find('div', {"class":"article-board result-board m-tcol-c"})
             trs = table.find_all("tr")
             for tr in trs:
-                title = ""
-                status = ""
-                comments = "0"
-                date = ""
-                views = ""
-                likes = ""
-                title_td = tr.find("td",{"class": "td_article"})
-                if title_td:
-                    title_div = title_td.find("div", {"class": "board-list"})
-                    title = title_div.find("a",{"class": "article"}).text.strip().replace("\""," ").replace("\'", " ")
-                    cmt = title_div.find("a",{"class": "cmt"})
-                    if title_div.find("span",{"class": "list-i-selling"}):
-                        status = "판매"
-                    if title_div.find("span",{"class": "list-i-selling-safe"}):
-                        status = "판매(안전)"
-                    if title_div.find("span",{"class": "list-i-selling-reservation"}):
-                        status = "예약중"
-                    if title_div.find("span",{"class": "list-i-sellout"}):
-                        status = "완료"
-                    if cmt:
-                        comments = cmt.text.strip().strip("[""]")
-                    date_td = tr.find("td",{"class": "td_date"})
-                    if date_td:
-                        date = date_td.text.strip()
-                    view_td = tr.find("td",{"class": "td_view"})
-                    if view_td:
-                        views = view_td.text.strip().replace(",","")
-                    like_td = tr.find("td",{"class": "td_likes"})
-                    if like_td:
-                        likes = like_td.text.strip()
-                    name_td = tr.find("td",{"class": "td_name"})
-                    if name_td:
-                        name = name_td.text.strip()
-                    new_sellings.append({'id': id,'title': title, 'status': status, 'views': views, 'likes': likes, 'comments': comments, 'name': name, 'date': date})
-                    id = id + 1
-            page_cnt = page_cnt + 1
+                article_number = tr.find('div',{'class':'inner_number'})
+                if article_number:
+                    article_ids.append(article_number.text)
+            page_cnt = page_cnt + 1     
         print(f"{period}/{period_max} done")
     print('web scrapping done')
-    return new_sellings
+    return article_ids
+
+def get_pdp_soup(driver, article_id):
+    driver.get(f"https://cafe.naver.com/chocammall?iframe_url_utf8=%2FArticleRead.nhn%253Fclubid%3D20486145%2526page%3D1%2526menuid%3D214%2526boardtype%3DL%2526articleid%3D{article_id}%2526referrerAllArticles%3Dfalse")
+    sleep(0.5)
+    driver.switch_to.frame('cafe_main')
+    pdp_soup = BeautifulSoup(driver.page_source, 'html.parser')
+    return pdp_soup
+
+def convert_soup_to_dict(pdp_soup):
+    pdp_dict = {}
+    pdp_soup.find('div', {'class': 'section'}).find('div',{'class': 'LayerArticle'}).decompose()
+    title = pdp_soup.find('h3')
+    if title:
+        pdp_dict['title'] = title.text.strip()
+    cost = pdp_soup.find('strong', {'class':'cost'})
+    if cost:
+        pdp_dict['cost'] = cost.text.strip()
+    detail_list = pdp_soup.find('div', {'class': 'section'}).find_all('dl', {'class':'detail_list'})
+    details = []
+    for detail_item in detail_list:
+        detail_title = detail_item.find('dt')
+        if detail_title:
+            detail_title = detail_title.text.strip()
+        detail_content = detail_item.find('dd')
+        if detail_content:
+            detail_content = detail_content.text.strip().replace('  ', '').replace('\n', '')
+        details.append({f'{detail_title}': f'{detail_content}'})
+    pdp_dict['details'] = details
+    nickname = pdp_soup.find('div', {'class':'nick_box'})
+    if nickname:
+        pdp_dict['nickname'] = nickname.text.strip()
+    status = pdp_soup.find('p', {'class': 'ProductName'}).find('em')
+    if status:
+        pdp_dict['status'] = status.text.strip()
+    date = pdp_soup.find('span', {'class':'date'})
+    if date:
+        pdp_dict['date'] = date.text.strip()
+    views = pdp_soup.find('span', {'class':'count'})
+    if views:
+        pdp_dict['views'] = views.text.replace('조회', '').strip()
+    main = pdp_soup.find('div', {'class':'se-main-container'})
+    if main:
+        pdp_dict['main'] = main.text.strip().replace('\n', '').replace('\u200b', '')
+    else:
+        pdp_dict['main'] = "body 크롤링 실패"
+    pdp_dict['comments_cnt'] = pdp_soup.find('strong', {'class':'num'}).text.strip()
+    comments = pdp_soup.find('ul', {'class':'comment_list'})
+    if comments:
+        pdp_dict['comments'] = comments.text.strip().replace('  ', '').replace('\n', '').replace('답글쓰기', '')
+    else:
+        pdp_dict['comments'] = ''
+    likes = pdp_soup.find('div',{'class':'like_article'}).find('em', {'class': "u_cnt _count"})
+    if likes:
+        pdp_dict['likes'] = likes.text
+    return pdp_dict
+
+def get_pdp_dicts(driver, article_ids):
+    pdp_dicts = []
+    for article_id in article_ids:
+        pdp_soup = get_pdp_soup(driver, article_id)
+        pdp_dict = convert_soup_to_dict(pdp_soup)
+        pdp_dicts.append(pdp_dict)
+    return pdp_dicts

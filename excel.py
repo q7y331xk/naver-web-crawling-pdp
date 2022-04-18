@@ -9,12 +9,18 @@ def write_excel(sellings):
     ws.title = "sellings"
     ws.cell(row = 1, column = 1, value = "id")
     ws.cell(row = 1, column = 2, value = "title")
-    ws.cell(row = 1, column = 3, value = "status")
-    ws.cell(row = 1, column = 4, value = "views")
-    ws.cell(row = 1, column = 5, value = "likes")
-    ws.cell(row = 1, column = 6, value = "comments")
-    ws.cell(row = 1, column = 7, value = "name")
+    ws.cell(row = 1, column = 3, value = "cost")
+    ws.cell(row = 1, column = 4, value = "nickname")
+    ws.cell(row = 1, column = 5, value = "status")
+    ws.cell(row = 1, column = 6, value = "condition")
+    ws.cell(row = 1, column = 7, value = "pay_methods")
+    ws.cell(row = 1, column = 8, value = "delivery")
+    ws.cell(row = 1, column = 8, value = "location")
+    ws.cell(row = 1, column = 8, value = "main")
+    ws.cell(row = 1, column = 8, value = "views")
     ws.cell(row = 1, column = 8, value = "date")
+    ws.cell(row = 1, column = 8, value = "comments_cnt")
+    ws.cell(row = 1, column = 8, value = "comments")
     i = 0
     while (i < col_length):
         row = sellings[i]
