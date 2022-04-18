@@ -15,12 +15,12 @@ def write_excel(sellings):
     ws.cell(row = 1, column = 6, value = "condition")
     ws.cell(row = 1, column = 7, value = "pay_methods")
     ws.cell(row = 1, column = 8, value = "delivery")
-    ws.cell(row = 1, column = 8, value = "location")
-    ws.cell(row = 1, column = 8, value = "main")
-    ws.cell(row = 1, column = 8, value = "views")
-    ws.cell(row = 1, column = 8, value = "date")
-    ws.cell(row = 1, column = 8, value = "comments_cnt")
-    ws.cell(row = 1, column = 8, value = "comments")
+    ws.cell(row = 1, column = 9, value = "location")
+    ws.cell(row = 1, column = 10, value = "main")
+    ws.cell(row = 1, column = 11, value = "views")
+    ws.cell(row = 1, column = 12, value = "date")
+    ws.cell(row = 1, column = 13, value = "comments_cnt")
+    ws.cell(row = 1, column = 14, value = "comments")
     i = 0
     while (i < col_length):
         row = sellings[i]

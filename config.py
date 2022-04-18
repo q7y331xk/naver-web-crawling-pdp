@@ -1,7 +1,7 @@
 # OPTIONS
 from datetime import datetime
 
-STARTS_AT = datetime(2021,1,1)
+STARTS_AT = datetime(2022,4,12)
 DAYS = 1
 # 검색어는 korean euc-kr encode
 

@@ -17,10 +17,13 @@ def get_article_ids(periods, session):
     article_ids = []
     period_max = periods[len(periods) - 1]
     for period in periods:
-        page = session.get(f"https://cafe.naver.com/ArticleSearchList.nhn?search.clubid=20486145&search.menuid=214&search.media=0&search.searchdate={period}{period}&search.defaultValue=1&userDisplay=50&search.onSale=1&search.option=3&search.sortBy=date&search.searchBy=0&search.query=%C6%C7%B8%C5%26&search.viewtype=title&search.page=1")
+        page = session.get(f"https://cafe.naver.com/ArticleSearchList.nhn?search.clubid=20486145&search.menuid=214&search.media=0&search.searchdate={period}{period}&search.defaultValue=1&userDisplay=50&search.onSale=1&search.option=0&search.sortBy=date&search.searchBy=0&search.query=%C6%C7%B8%C5%26&search.viewtype=title&search.page=1")
         page_parsed = BeautifulSoup(page.text, "html.parser")
         pagination = page_parsed.find('div', {"class":"prev-next"})
+        print(pagination)
+        pagination.find('a',{'class':'pgR'}).decompose()
         page_max = int(pagination.select_one('a:last-child').text)
+        print(page_max)
         page_cnt = 1
         while (page_cnt <= page_max):
             page = session.get(f"https://cafe.naver.com/ArticleSearchList.nhn?search.clubid=20486145&search.menuid=214&search.media=0&search.searchdate={period}{period}&search.defaultValue=1&userDisplay=50&search.onSale=1&search.option=3&search.sortBy=date&search.searchBy=0&search.query=%C6%C7%B8%C5%26&search.viewtype=title&search.page={page_cnt}")
