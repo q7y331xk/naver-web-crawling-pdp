@@ -17,30 +17,27 @@ def get_article_ids(periods, session):
     article_ids = []
     period_max = periods[len(periods) - 1]
     for period in periods:
-        page = session.get(f"https://cafe.naver.com/ArticleSearchList.nhn?search.clubid=20486145&search.menuid=214&search.media=0&search.searchdate={period}{period}&search.defaultValue=1&userDisplay=50&search.onSale=1&search.option=0&search.sortBy=date&search.searchBy=0&search.query=%C6%C7%B8%C5%26&search.viewtype=title&search.page=1")
-        page_parsed = BeautifulSoup(page.text, "html.parser")
-        pagination = page_parsed.find('div', {"class":"prev-next"})
-        print(pagination)
-        pagination.find('a',{'class':'pgR'}).decompose()
-        page_max = int(pagination.select_one('a:last-child').text)
-        print(page_max)
         page_cnt = 1
-        while (page_cnt <= page_max):
-            page = session.get(f"https://cafe.naver.com/ArticleSearchList.nhn?search.clubid=20486145&search.menuid=214&search.media=0&search.searchdate={period}{period}&search.defaultValue=1&userDisplay=50&search.onSale=1&search.option=3&search.sortBy=date&search.searchBy=0&search.query=%C6%C7%B8%C5%26&search.viewtype=title&search.page={page_cnt}")
-            table = page_parsed.find('div', {"class":"article-board result-board m-tcol-c"})
+        while True:
+            sellings = session.get(f"https://cafe.naver.com/ArticleSearchList.nhn?search.clubid=20486145&search.menuid=214&search.media=0&search.searchdate={period}{period}&userDisplay=50&search.sortBy=date&search.searchBy=0&search.option=0&search.query=%C6%C7%B8%C5%26&search.viewtype=title&search.page={page_cnt}")
+            sellings_parsed = BeautifulSoup(sellings.text, "html.parser")
+            nodata = sellings_parsed.find('div',{'class': 'nodata'})
+            if nodata:
+                break
+            table = sellings_parsed.find('div', {"class":"article-board result-board m-tcol-c"})
             trs = table.find_all("tr")
             for tr in trs:
                 article_number = tr.find('div',{'class':'inner_number'})
                 if article_number:
                     article_ids.append(article_number.text)
-            page_cnt = page_cnt + 1     
+            page_cnt = page_cnt + 1
         print(f"{period}/{period_max} done")
     print('web scrapping done')
     return article_ids
 
 def get_pdp_soup(driver, article_id):
     driver.get(f"https://cafe.naver.com/chocammall?iframe_url_utf8=%2FArticleRead.nhn%253Fclubid%3D20486145%2526page%3D1%2526menuid%3D214%2526boardtype%3DL%2526articleid%3D{article_id}%2526referrerAllArticles%3Dfalse")
-    sleep(0.5)
+    sleep(1)
     driver.switch_to.frame('cafe_main')
     pdp_soup = BeautifulSoup(driver.page_source, 'html.parser')
     return pdp_soup
@@ -79,13 +76,13 @@ def convert_soup_to_dict(pdp_soup):
         pdp_dict['views'] = views.text.replace('조회', '').strip()
     main = pdp_soup.find('div', {'class':'se-main-container'})
     if main:
-        pdp_dict['main'] = main.text.strip().replace('\n', '').replace('\u200b', '')
+        pdp_dict['main'] = main.text.strip().replace('\n', '').replace('\u200b', '').replace('"', ' ')
     else:
         pdp_dict['main'] = "body 크롤링 실패"
     pdp_dict['comments_cnt'] = pdp_soup.find('strong', {'class':'num'}).text.strip()
     comments = pdp_soup.find('ul', {'class':'comment_list'})
     if comments:
-        pdp_dict['comments'] = comments.text.strip().replace('  ', '').replace('\n', '').replace('답글쓰기', '')
+        pdp_dict['comments'] = comments.text.strip().replace('  ', '').replace('\n', '').replace('답글쓰기', '').replace('"', ' ')
     else:
         pdp_dict['comments'] = ''
     likes = pdp_soup.find('div',{'class':'like_article'}).find('em', {'class': "u_cnt _count"})
