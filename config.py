@@ -1,7 +1,7 @@
 # OPTIONS
 from datetime import datetime
 
-STARTS_AT = datetime(2022,3,1)
+STARTS_AT = datetime(2020, 8, 24)
 DAYS = 1
 NEW_TABLE = True
 SILENCE = False

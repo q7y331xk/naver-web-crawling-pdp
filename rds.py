@@ -32,6 +32,7 @@ def main_find_cost(main_text):
 
 def covert_data(pdp_dict):
     pdp_converted = copy.deepcopy(pdp_dict)
+    pdp_converted['use_cnt'] = None
     pdp_converted['condition'] = ''
     pdp_converted['pay_methods'] = ''
     pdp_converted['delivery'] = ''
@@ -66,6 +67,10 @@ def covert_data(pdp_dict):
     for_exchange = pdp_converted['title'].find('교환') > -1
     if for_exchange:
         pdp_converted['status'] = '교환'
+    use_cnt_text = r"[0-9]+회"
+    find_use_cnt_text = re.search(use_cnt_text, pdp_converted['main'])
+    if find_use_cnt_text:
+        pdp_converted['use_cnt'] = int(find_use_cnt_text.group().replace('회',''))
     return pdp_converted
 
 def conn_db():
@@ -82,7 +87,7 @@ def create_table_if_exists_drop():
         cost INT,\
         nickname TEXT,\
         `status` TEXT,\
-        `use_cnt` INT,\
+        use_cnt INT,\
         `condition` TEXT,\
         pay_methods TEXT,\
         delivery TEXT,\
@@ -109,6 +114,7 @@ def write_db(pdp_dicts):
             \"{pdp_converted['cost']}\",\
             \"{pdp_converted['nickname']}\",\
             \"{pdp_converted['status']}\",\
+            \"{pdp_converted['use_cnt']}\",\
             \"{pdp_converted['condition']}\",\
             \"{pdp_converted['pay_methods']}\",\
             \"{pdp_converted['delivery']}\",\
