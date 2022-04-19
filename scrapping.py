@@ -49,7 +49,7 @@ def convert_soup_to_dict(pdp_soup):
     pdp_soup.find('div', {'class': 'section'}).find('div',{'class': 'LayerArticle'}).decompose()
     title = pdp_soup.find('h3')
     if title:
-        pdp_dict['title'] = title.text.strip()
+        pdp_dict['title'] = title.text.strip().replace('"', ' ')
     cost = pdp_soup.find('strong', {'class':'cost'})
     if cost:
         pdp_dict['cost'] = cost.text.strip()

@@ -4,7 +4,7 @@ from datetime import datetime
 STARTS_AT = datetime(2021,3,1)
 DAYS = 31
 NEW_TABLE = True
-SILENCE = True
+SILENCE = False
 # 검색어는 korean euc-kr encode
 
 # RDS
