@@ -1,8 +1,9 @@
 import pymysql
+import copy
 from config import RDS_HOST, RDS_USER_NAME, RDS_USER_PW, RDS_DB, RDS_TABLE
 
 def covert_data(pdp_dict):
-    pdp_converted = pdp_dict
+    pdp_converted = copy.deepcopy(pdp_dict)
     pdp_converted['condition'] = ''
     pdp_converted['pay_methods'] = ''
     pdp_converted['delivery'] = ''
@@ -27,6 +28,9 @@ def covert_data(pdp_dict):
             if key == '거래 지역':
                 pdp_converted['location'] = value
     del(pdp_converted['details'])
+    for_sell = pdp_converted['title'].find('삽') > -1 | pdp_converted['main'].find('삽') > -1
+    if for_sell:
+        pdp_converted['status'] = '구매'
     return pdp_converted
 
 def conn_db():
