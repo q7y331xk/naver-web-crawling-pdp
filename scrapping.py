@@ -13,7 +13,7 @@ def set_cookies(cookies):
         session.cookies.update(c)
     return session
 
-def get_article_ids(period, period_max, session):
+def get_article_ids(period, session):
     article_ids = []
     page_cnt = 1
     while True:

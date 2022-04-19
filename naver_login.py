@@ -10,13 +10,15 @@ from config import NAVER_ID, NAVER_PW
 
 
 
-def set_chrome_driver():
+def set_chrome_driver(silence):
     chrome_options = webdriver.ChromeOptions()
+    if silence:
+        chrome_options.add_argument('headless')
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     return driver
 
-def naver_login():
-    driver = set_chrome_driver()
+def naver_login(silence):
+    driver = set_chrome_driver(silence)
     driver.get("https://nid.naver.com/nidlogin.login")
     pyperclip.copy(NAVER_ID)
     driver.find_element(By.ID,'id').click()
