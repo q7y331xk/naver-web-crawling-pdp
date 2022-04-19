@@ -29,14 +29,15 @@ def covert_data(pdp_dict):
     del(pdp_converted['details'])
     return pdp_converted
 
-def write_db(pdp_dicts):
-    print("write db...")
-    id = 1
+def conn_db():
     conn = pymysql.connect(host=RDS_HOST, user=RDS_USER_NAME, password=RDS_USER_PW, charset='utf8', port=3306, db=RDS_DB)
+    return conn
+
+def create_table_if_exists_drop(conn):
     cursor = conn.cursor()
     cursor.execute(f"DROP TABLE IF EXISTS {RDS_TABLE}")
     cursor.execute(f"CREATE TABLE {RDS_TABLE} (\
-        id INT,\
+        id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,\
         title TEXT,\
         cost INT,\
         nickname TEXT,\
@@ -52,6 +53,11 @@ def write_db(pdp_dicts):
         comments_cnt INT,\
         comments TEXT\
     )")
+
+
+
+def write_db(conn, pdp_dicts):
+    cursor = conn.cursor()
     for pdp_dict in pdp_dicts:
         pdp_converted = covert_data(pdp_dict)
         cursor.execute(f"INSERT INTO {RDS_TABLE} VALUES(\
@@ -71,7 +77,6 @@ def write_db(pdp_dicts):
             \"{pdp_converted['comments_cnt']}\",\
             \"{pdp_converted['comments']}\"\
         )")
-        id = id + 1
     conn.commit()
     print("write db done")
 

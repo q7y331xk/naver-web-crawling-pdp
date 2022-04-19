@@ -37,9 +37,15 @@ def get_article_ids(periods, session):
 
 def get_pdp_soup(driver, article_id):
     driver.get(f"https://cafe.naver.com/chocammall?iframe_url_utf8=%2FArticleRead.nhn%253Fclubid%3D20486145%2526page%3D1%2526menuid%3D214%2526boardtype%3DL%2526articleid%3D{article_id}%2526referrerAllArticles%3Dfalse")
-    sleep(1)
+    sleep(0.1)
     driver.switch_to.frame('cafe_main')
-    pdp_soup = BeautifulSoup(driver.page_source, 'html.parser')
+    while True:
+        pdp_soup = BeautifulSoup(driver.page_source, 'html.parser')
+        section = pdp_soup.find('div', {'class': 'section'})
+        if section:
+            break
+        sleep(0.1)
+
     return pdp_soup
 
 def convert_soup_to_dict(pdp_soup):

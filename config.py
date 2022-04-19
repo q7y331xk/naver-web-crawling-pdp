@@ -3,6 +3,7 @@ from datetime import datetime
 
 STARTS_AT = datetime(2021,1,1)
 DAYS = 1
+NEW_TABLE = False
 # 검색어는 korean euc-kr encode
 
 # RDS
