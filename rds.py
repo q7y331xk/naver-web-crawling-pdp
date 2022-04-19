@@ -27,7 +27,7 @@ def main_find_cost(main_text):
     if find_num_won:
         found_cost = int(find_num_won.group().replace('원',''))
     if find_num_man:
-        found_cost = int(find_num_man.group().replace('만',''))
+        found_cost = int(find_num_man.group().replace('만','')) * 10000
     return found_cost
 
 def covert_data(pdp_dict):

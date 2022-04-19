@@ -16,7 +16,7 @@ RDS_TABLE = 'recent_one_month'
 
 
 # EXCEL
-EXCEL_FILE_NAME = 'sellings'
+EXCEL_FILE_NAME = 'sellings_recently'
 EXCEL_SAVE_PATH = f"/Users/duckyounglee/Documents/{EXCEL_FILE_NAME}.xlsx"
 
 # Naver Login
