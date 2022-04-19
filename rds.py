@@ -19,7 +19,7 @@ def check_cost_significant(cost_text):
     return significant
 
 def main_find_cost(main_text):
-    found_cost = 0
+    found_cost = -1
     won= r"[0-9]+원"
     man= r"[0-9]+만"
     find_num_won = re.search(won, main_text)
@@ -32,7 +32,7 @@ def main_find_cost(main_text):
 
 def covert_data(pdp_dict):
     pdp_converted = copy.deepcopy(pdp_dict)
-    pdp_converted['use_cnt'] = None
+    pdp_converted['use_cnt'] = -1
     pdp_converted['condition'] = ''
     pdp_converted['pay_methods'] = ''
     pdp_converted['delivery'] = ''
