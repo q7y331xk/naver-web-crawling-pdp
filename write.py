@@ -9,7 +9,8 @@ from naver_login import naver_login
 def write(NEW_TABLE):
     periods = push_periods(starts_at = STARTS_AT, days = DAYS)
     period_max = periods[len(periods) - 1]
-    print("crawling options")
+    print("========================================")
+    print("check crawling options")
     print(f"date from {periods[0]} to {period_max}")
     if NEW_TABLE:
         print('crawl into new table')
@@ -18,6 +19,7 @@ def write(NEW_TABLE):
         print('crawl into exist table')
     if SILENCE:
         print('without opening browser')
+    print("========================================")
     login = naver_login(SILENCE)
     driver = login['driver']
     cookies = login['cookies']
