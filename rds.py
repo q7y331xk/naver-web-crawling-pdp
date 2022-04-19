@@ -81,7 +81,6 @@ def write_db(pdp_dicts):
             \"{pdp_converted['comments']}\"\
         )")
     conn.commit()
-    print("write db done")
 
 def read_db():
     conn = pymysql.connect(host=RDS_HOST, user=RDS_USER_NAME, password=RDS_USER_PW, charset='utf8', port=3306, db=RDS_DB)

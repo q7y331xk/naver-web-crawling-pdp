@@ -5,7 +5,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from webdriver_manager.chrome import ChromeDriverManager
-from bs4 import BeautifulSoup
 import pyperclip
 from config import NAVER_ID, NAVER_PW
 

@@ -29,7 +29,6 @@ def get_article_ids(period, period_max, session):
             if article_number:
                 article_ids.append(article_number.text)
         page_cnt = page_cnt + 1
-    print(f"{period}/{period_max} done")
     return article_ids
 
 def get_pdp_soup(driver, article_id):
