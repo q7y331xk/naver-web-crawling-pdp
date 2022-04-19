@@ -1,6 +1,34 @@
 import pymysql
 import copy
+import re
 from config import RDS_HOST, RDS_USER_NAME, RDS_USER_PW, RDS_DB, RDS_TABLE
+
+
+
+def check_cost_significant(cost_text):
+    significant = True
+    cost_int = int(cost_text)
+    if cost_text.find('123') > -1:
+        significant = False
+    if cost_text.replace(cost_text[0],'') == '':
+        significant = False
+    if cost_int < 10000:
+        significant = False
+    if cost_int > 9000000:
+        significant = False
+    return significant
+
+def main_find_cost(main_text):
+    found_cost = 0
+    won= r"[0-9]+원"
+    man= r"[0-9]+만"
+    find_num_won = re.search(won, main_text)
+    find_num_man = re.search(man, main_text)
+    if find_num_won:
+        found_cost = int(find_num_won.group().replace('원',''))
+    if find_num_man:
+        found_cost = int(find_num_man.group().replace('만',''))
+    return found_cost
 
 def covert_data(pdp_dict):
     pdp_converted = copy.deepcopy(pdp_dict)
@@ -12,7 +40,11 @@ def covert_data(pdp_dict):
     views_text = pdp_dict['views'].replace(',','')
     likes_text = pdp_dict['likes'].replace(',','')
     comments_cnt_text = pdp_dict['comments_cnt'].replace(',','')
-    pdp_converted['cost'] = int(cost_text)
+    cost_significant = check_cost_significant(cost_text)
+    if cost_significant:
+        pdp_converted['cost'] = int(cost_text)
+    else:
+        pdp_converted['cost'] = main_find_cost(pdp_dict['main'])
     pdp_converted['views'] = int(views_text)
     pdp_converted['likes'] = int(likes_text)
     pdp_converted['comments_cnt'] = int(comments_cnt_text)
@@ -28,9 +60,12 @@ def covert_data(pdp_dict):
             if key == '거래 지역':
                 pdp_converted['location'] = value
     del(pdp_converted['details'])
-    for_sell = pdp_converted['title'].find('삽') > -1 | pdp_converted['main'].find('삽') > -1
+    for_sell = pdp_converted['title'].find('삽') > -1 | pdp_converted['main'].find('삽') > -1 | pdp_converted['title'].find('구매') > -1 
     if for_sell:
         pdp_converted['status'] = '구매'
+    for_exchange = pdp_converted['title'].find('교환') > -1
+    if for_exchange:
+        pdp_converted['status'] = '교환'
     return pdp_converted
 
 def conn_db():
