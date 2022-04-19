@@ -60,7 +60,7 @@ def covert_data(pdp_dict):
             if key == '거래 지역':
                 pdp_converted['location'] = value
     del(pdp_converted['details'])
-    for_sell = pdp_converted['title'].find('삽') > -1 | pdp_converted['main'].find('삽') > -1 | pdp_converted['title'].find('구매') > -1 
+    for_sell = pdp_converted['title'].find('삽') > -1 or pdp_converted['main'].find('삽') > -1 or pdp_converted['title'].find('구매') > -1 
     if for_sell:
         pdp_converted['status'] = '구매'
     for_exchange = pdp_converted['title'].find('교환') > -1
@@ -82,6 +82,7 @@ def create_table_if_exists_drop():
         cost INT,\
         nickname TEXT,\
         `status` TEXT,\
+        `use_cnt` INT,\
         `condition` TEXT,\
         pay_methods TEXT,\
         delivery TEXT,\
