@@ -33,7 +33,8 @@ def conn_db():
     conn = pymysql.connect(host=RDS_HOST, user=RDS_USER_NAME, password=RDS_USER_PW, charset='utf8', port=3306, db=RDS_DB)
     return conn
 
-def create_table_if_exists_drop(conn):
+def create_table_if_exists_drop():
+    conn = conn_db()
     cursor = conn.cursor()
     cursor.execute(f"DROP TABLE IF EXISTS {RDS_TABLE}")
     cursor.execute(f"CREATE TABLE {RDS_TABLE} (\
@@ -53,10 +54,12 @@ def create_table_if_exists_drop(conn):
         comments_cnt INT,\
         comments TEXT\
     )")
+    conn.commit()
 
 
 
-def write_db(conn, pdp_dicts):
+def write_db(pdp_dicts):
+    conn = conn_db()
     cursor = conn.cursor()
     for pdp_dict in pdp_dicts:
         pdp_converted = covert_data(pdp_dict)

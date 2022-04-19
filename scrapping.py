@@ -13,26 +13,23 @@ def set_cookies(cookies):
         session.cookies.update(c)
     return session
 
-def get_article_ids(periods, session):
+def get_article_ids(period, period_max, session):
     article_ids = []
-    period_max = periods[len(periods) - 1]
-    for period in periods:
-        page_cnt = 1
-        while True:
-            sellings = session.get(f"https://cafe.naver.com/ArticleSearchList.nhn?search.clubid=20486145&search.menuid=214&search.media=0&search.searchdate={period}{period}&userDisplay=50&search.sortBy=date&search.searchBy=0&search.option=0&search.query=%C6%C7%B8%C5%26&search.viewtype=title&search.page={page_cnt}")
-            sellings_parsed = BeautifulSoup(sellings.text, "html.parser")
-            nodata = sellings_parsed.find('div',{'class': 'nodata'})
-            if nodata:
-                break
-            table = sellings_parsed.find('div', {"class":"article-board result-board m-tcol-c"})
-            trs = table.find_all("tr")
-            for tr in trs:
-                article_number = tr.find('div',{'class':'inner_number'})
-                if article_number:
-                    article_ids.append(article_number.text)
-            page_cnt = page_cnt + 1
-        print(f"{period}/{period_max} done")
-    print('web scrapping done')
+    page_cnt = 1
+    while True:
+        sellings = session.get(f"https://cafe.naver.com/ArticleSearchList.nhn?search.clubid=20486145&search.menuid=214&search.media=0&search.searchdate={period}{period}&userDisplay=50&search.sortBy=date&search.searchBy=0&search.option=0&search.query=%C6%C7%B8%C5%26&search.viewtype=title&search.page={page_cnt}")
+        sellings_parsed = BeautifulSoup(sellings.text, "html.parser")
+        nodata = sellings_parsed.find('div',{'class': 'nodata'})
+        if nodata:
+            break
+        table = sellings_parsed.find('div', {"class":"article-board result-board m-tcol-c"})
+        trs = table.find_all("tr")
+        for tr in trs:
+            article_number = tr.find('div',{'class':'inner_number'})
+            if article_number:
+                article_ids.append(article_number.text)
+        page_cnt = page_cnt + 1
+    print(f"{period}/{period_max} done")
     return article_ids
 
 def get_pdp_soup(driver, article_id):

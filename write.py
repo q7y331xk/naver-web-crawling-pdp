@@ -12,11 +12,15 @@ def write(NEW_TABLE):
     driver = login['driver']
     cookies = login['cookies']
     req_session = set_cookies(cookies)
-    article_ids = get_article_ids(periods, req_session)
-    pdp_dicts = get_pdp_dicts(driver, article_ids)
-    conn = conn_db()
+
     if NEW_TABLE:
-        create_table_if_exists_drop(conn)
-    write_db(conn, pdp_dicts)
+        create_table_if_exists_drop()
+
+    period_max = periods[len(periods) - 1]
+    for period in periods:
+        article_ids = get_article_ids(period, period_max, req_session)
+        pdp_dicts = get_pdp_dicts(driver, article_ids)
+        write_db(pdp_dicts)
+        print(f"{period}/{period_max} done")
 
 write(NEW_TABLE)
