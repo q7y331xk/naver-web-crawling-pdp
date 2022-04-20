@@ -67,10 +67,14 @@ def covert_data(pdp_dict):
     for_exchange = pdp_converted['title'].find('교환') > -1
     if for_exchange:
         pdp_converted['status'] = '교환'
-    use_cnt_text = r"[0-9]+회"
-    find_use_cnt_text = re.search(use_cnt_text, pdp_converted['main'])
-    if find_use_cnt_text:
-        pdp_converted['use_cnt'] = int(find_use_cnt_text.group().replace('회',''))
+    isNew = pdp_converted['main'].find('새제품') > -1 or pdp_converted['main'].find('새상품') > -1 or pdp_converted['main'].find('미개봉') > -1 or pdp_converted['main'].find('미사용') > -1
+    if isNew:
+        pdp_converted['use_cnt'] = 0
+    else:
+        use_cnt_text = r"[0-9]+회"
+        find_use_cnt_text = re.search(use_cnt_text, pdp_converted['main'])
+        if find_use_cnt_text:
+            pdp_converted['use_cnt'] = int(find_use_cnt_text.group().replace('회',''))
     return pdp_converted
 
 def conn_db():

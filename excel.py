@@ -20,8 +20,9 @@ def write_excel(sellings):
     ws.cell(row = 1, column = 11, value = "main")
     ws.cell(row = 1, column = 12, value = "views")
     ws.cell(row = 1, column = 13, value = "date")
-    ws.cell(row = 1, column = 14, value = "comments_cnt")
-    ws.cell(row = 1, column = 15, value = "comments")
+    ws.cell(row = 1, column = 14, value = "likes")
+    ws.cell(row = 1, column = 15, value = "comments_cnt")
+    ws.cell(row = 1, column = 16, value = "comments")
     i = 0
     while (i < col_length):
         row = sellings[i]
