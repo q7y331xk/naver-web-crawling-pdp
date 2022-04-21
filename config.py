@@ -1,9 +1,9 @@
 # OPTIONS
 from datetime import datetime
 
-STARTS_AT = datetime(2021, 1, 1)
-DAYS = 365
-NEW_TABLE = True
+STARTS_AT = datetime(2021, 3, 20)
+DAYS = 100
+NEW_TABLE = False
 SILENCE = False
 # 검색어는 korean euc-kr encode
 
