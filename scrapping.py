@@ -40,6 +40,12 @@ def get_pdp_soup(driver, article_id):
         section = pdp_soup.find('div', {'class': 'section'})
         if section:
             break
+        else:
+            error = pdp_soup.find('div', {'class': 'error'})
+            if error:
+                driver.get(f"https://cafe.naver.com/chocammall?iframe_url_utf8=%2FArticleRead.nhn%253Fclubid%3D20486145%2526page%3D1%2526menuid%3D214%2526boardtype%3DL%2526articleid%3D{article_id}%2526referrerAllArticles%3Dfalse")
+                sleep(0.1)
+                driver.switch_to.frame('cafe_main')            
         sleep(0.1)
 
     return pdp_soup
