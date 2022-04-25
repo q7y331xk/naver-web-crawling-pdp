@@ -1,4 +1,6 @@
 from openpyxl import Workbook
+from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
+import re
 from config import EXCEL_SAVE_PATH
 
 def write_excel(sellings):
@@ -28,7 +30,9 @@ def write_excel(sellings):
         row = sellings[i]
         j = 0
         while (j < row_length):
-            ws.cell(row = i + 1 + 1, column = j + 1, value = row[j])
+            item = row[j]
+            item_str = str(item)
+            ws.cell(row = i + 1 + 1, column = j + 1).value = ILLEGAL_CHARACTERS_RE.sub(r'', item_str)
             j = j + 1
         i = i + 1
     wb.save(EXCEL_SAVE_PATH)
