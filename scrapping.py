@@ -36,18 +36,29 @@ def get_pdp_soup(driver, article_id):
     sleep(0.1)
     driver.switch_to.frame('cafe_main')
     while True:
+        i = 0
         pdp_soup = BeautifulSoup(driver.page_source, 'html.parser')
         section = pdp_soup.find('div', {'class': 'section'})
         if section:
             break
         else:
+            se_section = pdp_soup.find('div', {'class': 'se-section'})
+            if se_section:
+                pdp_soup = 'pass'
+                break
             error = pdp_soup.find('div', {'class': 'error'})
             if error:
                 driver.get(f"https://cafe.naver.com/chocammall?iframe_url_utf8=%2FArticleRead.nhn%253Fclubid%3D20486145%2526page%3D1%2526menuid%3D214%2526boardtype%3DL%2526articleid%3D{article_id}%2526referrerAllArticles%3Dfalse")
                 sleep(0.1)
-                driver.switch_to.frame('cafe_main')            
+                driver.switch_to.frame('cafe_main')
+                     
         sleep(0.1)
-
+        i = i + 1
+        if i > 50:
+            driver.get(f"https://cafe.naver.com/chocammall?iframe_url_utf8=%2FArticleRead.nhn%253Fclubid%3D20486145%2526page%3D1%2526menuid%3D214%2526boardtype%3DL%2526articleid%3D{article_id}%2526referrerAllArticles%3Dfalse")
+            sleep(0.5)
+            driver.switch_to.frame('cafe_main')
+    
     return pdp_soup
 
 def convert_soup_to_dict(pdp_soup):
@@ -102,6 +113,8 @@ def get_pdp_dicts(driver, article_ids):
     pdp_dicts = []
     for article_id in article_ids:
         pdp_soup = get_pdp_soup(driver, article_id)
+        if pdp_soup == 'pass':
+            break
         pdp_dict = convert_soup_to_dict(pdp_soup)
         pdp_dicts.append(pdp_dict)
     return pdp_dicts

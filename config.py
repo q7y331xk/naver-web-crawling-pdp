@@ -1,7 +1,7 @@
 # OPTIONS
 from datetime import datetime
 
-STARTS_AT = datetime(2021, 5, 20)
+STARTS_AT = datetime(2021, 8, 27)
 DAYS = 300
 NEW_TABLE = False
 SILENCE = False
