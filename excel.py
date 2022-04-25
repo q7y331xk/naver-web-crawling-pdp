@@ -35,7 +35,6 @@ def write_excel(sellings):
             item = row[j]
             item_str = str(item)
             ws.cell(row = i + 1 + 1, column = j + 1).value = ILLEGAL_CHARACTERS_RE.sub(r'', item_str)
-            #ws.cell(row = i + 1 + 1, column = j + 1).value = item
             j = j + 1
         i = i + 1
     wb.save(EXCEL_SAVE_PATH)
@@ -43,7 +42,6 @@ def write_excel(sellings):
 
 
 def write_exist_excel(sellings):
-    row_length = len(sellings)
     col_length = len(sellings[0])
     wb = openpyxl.load_workbook(EXCEL_SAVE_PATH)
     ws = wb.active

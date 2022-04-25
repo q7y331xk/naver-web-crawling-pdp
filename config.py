@@ -1,8 +1,8 @@
 # OPTIONS
 from datetime import datetime
 
-STARTS_AT = datetime(2022, 4, 13)
-DAYS = 13
+STARTS_AT = datetime(2022, 4, 22)
+DAYS = 12
 NEW_TABLE = False
 SILENCE = False
 # 검색어는 korean euc-kr encode
