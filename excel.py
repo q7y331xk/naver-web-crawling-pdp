@@ -1,11 +1,13 @@
 from openpyxl import Workbook
+import openpyxl
 from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 import re
 from config import EXCEL_SAVE_PATH
 
 def write_excel(sellings):
-    col_length = len(sellings)
-    row_length = len(sellings[0])
+    row_length = len(sellings)
+    col_length = len(sellings[0])
+    print(f"rows: {row_length} / cols: {col_length}")
     wb = Workbook()
     ws = wb.active
     ws.title = "sellings"
@@ -26,10 +28,30 @@ def write_excel(sellings):
     ws.cell(row = 1, column = 15, value = "comments_cnt")
     ws.cell(row = 1, column = 16, value = "comments")
     i = 0
-    while (i < col_length):
+    while (i < row_length):
         row = sellings[i]
         j = 0
-        while (j < row_length):
+        while (j < col_length):
+            item = row[j]
+            item_str = str(item)
+            ws.cell(row = i + 1 + 1, column = j + 1).value = ILLEGAL_CHARACTERS_RE.sub(r'', item_str)
+            #ws.cell(row = i + 1 + 1, column = j + 1).value = item
+            j = j + 1
+        i = i + 1
+    wb.save(EXCEL_SAVE_PATH)
+    print(f'write excel in "{EXCEL_SAVE_PATH}"')
+
+
+def write_exist_excel(sellings):
+    row_length = len(sellings)
+    col_length = len(sellings[0])
+    wb = openpyxl.load_workbook(EXCEL_SAVE_PATH)
+    ws = wb.active
+    i = 150001
+    while (i < 200000):
+        row = sellings[i]
+        j = 0
+        while (j < col_length):
             item = row[j]
             item_str = str(item)
             ws.cell(row = i + 1 + 1, column = j + 1).value = ILLEGAL_CHARACTERS_RE.sub(r'', item_str)
