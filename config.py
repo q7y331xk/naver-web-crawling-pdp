@@ -1,8 +1,8 @@
 # OPTIONS
 from datetime import datetime
 
-STARTS_AT = datetime(2022, 4, 22)
-DAYS = 12
+STARTS_AT = datetime(2020, 9, 1)
+DAYS = 100
 NEW_TABLE = False
 SILENCE = False
 # 검색어는 korean euc-kr encode
@@ -12,11 +12,11 @@ RDS_HOST = 'oden-second-hands-selling.ctj9mgachfi3.ap-northeast-2.rds.amazonaws.
 RDS_USER_NAME = 'admin'
 RDS_USER_PW = 'pLa5yfCbS^rCt^vh'
 RDS_DB = 'chocam'
-RDS_TABLE = 'last_year'
+RDS_TABLE = 'llast_year'
 
 
 # EXCEL
-EXCEL_FILE_NAME = 'last_year'
+EXCEL_FILE_NAME = 'llast_year'
 EXCEL_SAVE_PATH = f"/Users/duckyounglee/Documents/{EXCEL_FILE_NAME}.xlsx"
 
 # Naver Login
