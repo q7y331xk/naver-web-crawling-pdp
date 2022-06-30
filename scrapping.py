@@ -112,9 +112,12 @@ def convert_soup_to_dict(pdp_soup):
 def get_pdp_dicts(driver, article_ids):
     pdp_dicts = []
     for article_id in article_ids:
+      try:
         pdp_soup = get_pdp_soup(driver, article_id)
         if pdp_soup == 'pass':
             break
         pdp_dict = convert_soup_to_dict(pdp_soup)
         pdp_dicts.append(pdp_dict)
+      except: 
+        print("pass article id: ", article_id)
     return pdp_dicts

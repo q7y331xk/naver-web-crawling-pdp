@@ -1,8 +1,8 @@
 # OPTIONS
 from datetime import datetime
 
-STARTS_AT = datetime(2020, 10, 8)
-DAYS = 1
+STARTS_AT = datetime(2022, 4, 24)
+DAYS = 10
 NEW_TABLE = True
 SILENCE = False
 # 검색어는 korean euc-kr encode
@@ -12,7 +12,7 @@ RDS_HOST = 'oden-second-hands-selling.ctj9mgachfi3.ap-northeast-2.rds.amazonaws.
 RDS_USER_NAME = 'admin'
 RDS_USER_PW = 'pLa5yfCbS^rCt^vh'
 RDS_DB = 'chocam'
-RDS_TABLE = 'test'
+RDS_TABLE = 'crawl_new_test'
 
 
 # EXCEL
